@@ -1,6 +1,6 @@
 # village
 
-Village is a collection of responsive zsh prompt configurations using its own asynchronous configuration framework. (`elf.zsh`)
+Village is a collection of responsive zsh prompt configurations using their own shared asynchronous configuration framework. (`elf.zsh`)
 
 Using `elf.zsh`, village prompts often noticeably outperform both well known prompt configurations and frameworks as well as handcrafted prompts of similar complexity.
 
@@ -8,7 +8,7 @@ Using `elf.zsh`, village prompts often noticeably outperform both well known pro
 
 # usage
 
-You may load any of them them in the following manner:
+You may load any elf/configuration in the following manner:
 
 ```
 source $VILLAGE_SCRIPTDIR/your_favorite_elf.zsh

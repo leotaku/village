@@ -1,6 +1,6 @@
 # village
 
-If you are a beginner zsh user you might want to first take a look at the `village` subdirectory of this repo.
+If you are a beginner zsh user you might want to first take a look at the `village` parent directory of this repo.
 
 It contains predefined elf configurations that you may use directly or as a base for your own creations.
 
@@ -102,12 +102,12 @@ aline_add_async ra GIT_REV "git rev-parse --short HEAD 2>/dev/null | tr -d \"[:s
 
 ## FAQ
 
-# How does this compare to other asynchronous zsh prompts? (pure, alien, ...)
+### How does this compare to other asynchronous zsh prompts? (pure, alien, ...)
 I do not know how to properly benchmark prompts return times, however I personally perceive `elf` to be significantly faster than any other solution I have tried. 
 
 Elf of course also allows you to create your own prompts without modifying the source.
 
-# Why is the vi-cursors functionality integrated into elf? It doesn't really fit in this package.
+### Why is the vi-cursors functionality integrated into elf? It doesn't really fit in this package.
 I entirely agree. In an ideal world it would be an entirely different package/library. However, zsh zle hooks are exclusive, meaning only one command may be bound to them at any time.
 
 This means any two library wanting to use a "shared" zle hook need to have custom built integration.
