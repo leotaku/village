@@ -13,8 +13,9 @@ You may load any elf/configuration in the following manner:
 ```
 source $VILLAGE_SCRIPTDIR/your_favorite_elf.zsh
 
-# use elf_prompt_initialize instead if you do not want 
-# your cursor to change based on the current vi state
+# use elf_prompt_initialize instead of elf_both_initialize if you
+# do not want your cursor to change based on the current vi state
+
 elf_both_initialize
 #elf_prompt_initialize
 ```
