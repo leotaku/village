@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 # aui -- a simple async ui framework for zsh
 
 typeset -g AUI_VERSION="DEBUG"
@@ -93,6 +91,6 @@ function _aui_callback {
     if [[ -n "$err" ]]; then
         local output="$(zpty -r $worker)"
         aui_stop_worker "$worker"
-        eval "$handle "$worker" $output"
+        eval "$handle "$worker" '$output'"
     fi
 }

@@ -26,7 +26,7 @@ aline_add ra '%{$fg_bold[red]%}'
 elf_add_async ra GIT_REV "git rev-parse --short HEAD 2>/dev/null | tr -d \"[:space:]\"" "(){ NEW="\$1"; }"
 aline_add ra '%{$fg_no_bold[default]%}'
 
-elf_prompt_initialize
+elf_initialize
 ```
 
 With this setup your left prompt shows the cwd and the right prompt shows the currently active git branch.
@@ -36,29 +36,24 @@ The git branch is fetched and displayed fully asynchronously.
 
 ### Initialization
 
-`elf` offers 3 different commands for its initialization. 
+`elf` offers 1 command for its initialization. 
 
 * `elf_prompt_initialize`
   Initialize the elf prompt configuration functionality
-* `elf_vi_initialize`
-  Initialize only the vi cursor changing functionality
-* `elf_both_initialize`
-  Initialize both the prompt as well as the vi cursor changing functionality
-  This kind of combined initialization is needed because zle hooks are exclusive, but vi-cursors and elf depend on some of the same hooks
 
-Before initialization, `elf` only defines functions and variables. Hooks are then placed when elf is initialized.
+Before initialization, `elf` only defines functions, variables and widgets. Hooks are then placed when elf is initialized.
 
 After initialization, `elf`:
 * sets `PS1` and `RPS1`
-* takes over the following zle hooks
+* adds widgets to the following zle hooks
     * zle-line-init
     * zle-line-finish
-    * zle-keymap-select (when vi cursor support is loaded)
 * traps the INT signal
 
 ### Configuration
 
 `elf` offers 2 commands for prompt configuration.
+
 * `elf_add [WHICH_PROMPT] [SECTION]`
   add text SECTION to the end of prompt WHICH_PROMPT. escaped values are synchronously expanded when the prompt is shown.
   Use this for static values and cheap computations that wont block your prompt. (eg. `"$?"`, `"%~"`)
@@ -72,6 +67,8 @@ After initialization, `elf`:
   the callback that is run after `CMD` has completed, with the stdout+err of CMD as its first and only argument.
   It has full access to the interactive shells environment.
   For convenience CALLBACK may modify the value of it's associated variable by simply assigning `$NEW`
+* `IDENTIFIER`
+  Number used to refer to a specific asynchronous block
 * `WHICH_PROMPT`
   WHICH_PROMPT is the value used for describing the prompt a block should be added to.
   * la - the left prompt while still active
@@ -102,17 +99,20 @@ aline_add_async ra GIT_REV "git rev-parse --short HEAD 2>/dev/null | tr -d \"[:s
 
 ## FAQ
 
-### How does this compare to other asynchronous zsh prompts? (pure, alien, ...)
-I do not know how to properly benchmark prompts return times, however I personally perceive `elf` to be significantly faster than any other solution I have tried. 
+### How does this compare to other zsh prompts? (pure, alien, ...)
+I do not know how to properly benchmark prompts return times, however I personally perceive `elf` to be significantly faster than any other solution I have tried. (with the exception of pure, where there does not seem to be a perceivable difference in performance)
+
+Elf also aims to be as small as possible and to not rely on external dependencies.
+
+| prompt    | performance      | actual loc (lines -blank -comments)| external dependencies               |
++------------------------------+------------------------------------+-------------------------------------+
+| alien     | noticable delays | 511 (alien libs) + 1390 (external) | promptlib, zsh-256color, zsh-async  |
+| pure      | no delay         | 372 (pure.zsh) + 292 (async.zsh)   | async.zsh (copied into repo)        |
+| geometry  |                  |                                    |                                     |
+| spaceship |                  |                                    |                                     |
+| elf       | no delay         | 93 (elf.zsh) + 48 (aui.zsh)        | none                                |
 
 Elf of course also allows you to create your own prompts without modifying the source.
-
-### Why is the vi-cursors functionality integrated into elf? It doesn't really fit in this package.
-I entirely agree. In an ideal world it would be an entirely different package/library. However, zsh zle hooks are exclusive, meaning only one command may be bound to them at any time.
-
-This means any two library wanting to use a "shared" zle hook need to have custom built integration.
-
-__NOTE:__ this could maybe be fixed with the help of [zsh-hooks](https://github.com/willghatch/zsh-hooks)
 
 # aui.zsh
 `aui.zsh` - asynchronous ui for zsh
