@@ -154,7 +154,7 @@ function elf_line_init {
         worker="${identifier}_worker"
         aui_stop_worker "$worker" &>/dev/null
         aui_start_worker "$worker"
-        aui_run_worker "$WORKER" "$cmd" "elf_line_callback $identifier '(){$callback;}'"
+        aui_run_worker "$WORKER" "$cmd" "elf_line_callback $identifier '(){$callback; true}'"
     done
 }
 
@@ -164,9 +164,10 @@ function elf_line_callback {
     local NEW
     shift 3;
 
-    eval "$callback $@" ||\
-        echo "elf_line_callback: eval error occured" ||\
+    eval "$callback \"$@\"" || {
+        echo "elf_line_callback: eval error occured"
         echo "$callback $@"
+    }
 
     if [[ "$NEW" != "${psvar[$identifier]}" ]]; then 
         psvar[$identifier]="$NEW"
