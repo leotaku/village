@@ -90,7 +90,10 @@ function _aui_callback {
     
     if [[ -n "$err" ]]; then
         local output="$(zpty -r $worker)"
+        output="${output%[^::print::]}"
         aui_stop_worker "$worker"
-        eval "$handle "$worker" '$output'"
+        eval "$handle \"$worker\" \"$output\"" ||\
+        echo "_aui_callback: eval error occured" ||\
+        echo "$handle \"$worker\" \"$output\""
     fi
 }

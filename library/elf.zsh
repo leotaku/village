@@ -101,8 +101,10 @@ typeset -gA ELF_PROMPT_WORKER_CALLBACKS=()
 # prompt/line
 
 function elf_add {
-    local section="$2%f%k%b%u%s"
+    local section="$2"
     local which_prompt="$1"
+
+    section="${section}%{%f%k%b%u%s%}"
 
     case $which_prompt; in
         la)
@@ -113,27 +115,27 @@ function elf_add {
             ELF_FINISHED_PROMPT="$ELF_FINISHED_PROMPT$section";;
         rf)
             ELF_FINISHED_RPROMPT="$ELF_FINISHED_RPROMPT$section";;
-        no);;
         *)
-            echo "elf_add: please specify a valid prompt type: la|ra|lf|rf|no" 1>&2
+            echo "elf_add: please specify a valid prompt location: la|ra|lf|rf" 1>&2
             return 1;;
     esac
 }
 
-function elf_add_async {
-    local which_prompt="$1"
-    local identifier="$2"
-    local cmd="$3"
-    local callback="$4"
+function elf_register_async {
+    local identifier="$1"
+    local cmd="$2"
+    local callback="$3"
 
-    elf_add "$which_prompt" "\$psvar[$identifier]" || return 1
+    case $identifier in
+        1|2|3|4|5|6|7|8|);;
+        *)
+            echo "elf_register_async: please specify a valid identifier (1-8)"
+            return 1
+            ;;
+    esac
 
-    if [[ -z "$cmd" ]] && [[ -z "$callback" ]]; then
-        return 0
-    fi
-    
-    if [[ -n "$cmd" ]] && [[ -z "$callback" ]]; then
-        echo "elf_add_async: please specify a callback" 1>&2
+    if [[ -z "$cmd" ]] || [[ -z "$callback" ]]; then
+        echo "elf_register_async: please specify a command as well as a callback" 1>&2
         return 1
     fi
 
@@ -152,9 +154,26 @@ function elf_line_init {
         worker="${identifier}_worker"
         aui_stop_worker "$worker" &>/dev/null
         aui_start_worker "$worker"
-        aui_run_worker "$WORKER" "$cmd" "(){ local NEW; shift; $callback "\$@"; if [[ \$NEW != \${psvar[$identifier]} ]]; then psvar[$identifier]=\$NEW; zle reset-prompt; fi; }"
+        aui_run_worker "$WORKER" "$cmd" "elf_line_callback $identifier '(){$callback;}'"
     done
 }
+
+function elf_line_callback {
+    local identifier="$1"
+    local callback="$2"
+    local NEW
+    shift 3;
+
+    eval "$callback $@" ||\
+    echo "elf_line_callback: eval error occured" ||\
+    echo "$callback $@"
+
+    if [[ "$NEW" != "${psvar[$identifier]}" ]]; then 
+        psvar[$identifier]="$NEW"
+        zle reset-prompt 
+    fi
+}
+
 
 # TODO: missed optimization opportunity: manually expand prompts and check for changes
 function elf_line_reset {
