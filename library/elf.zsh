@@ -165,8 +165,8 @@ function elf_line_callback {
     shift 3;
 
     eval "$callback $@" ||\
-    echo "elf_line_callback: eval error occured" ||\
-    echo "$callback $@"
+        echo "elf_line_callback: eval error occured" ||\
+        echo "$callback $@"
 
     if [[ "$NEW" != "${psvar[$identifier]}" ]]; then 
         psvar[$identifier]="$NEW"

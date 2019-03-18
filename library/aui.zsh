@@ -93,7 +93,7 @@ function _aui_callback {
         output="${output%[^::print::]}"
         aui_stop_worker "$worker"
         eval "$handle \"$worker\" \"$output\"" ||\
-        echo "_aui_callback: eval error occured" ||\
-        echo "$handle \"$worker\" \"$output\""
+            echo "_aui_callback: eval error occured" ||\
+            echo "$handle \"$worker\" \"$output\""
     fi
 }
