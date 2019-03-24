@@ -25,8 +25,8 @@ function aui_start_worker {
     local worker="$1"
     
     zpty -b "$worker" "read -r cmd; eval \$cmd" || return 1
-
     local fd="$REPLY"
+
     AUI_WORKER_FDS[$worker]="$fd"
     AUI_FD_WORKERS[$fd]="$worker"
 
@@ -87,15 +87,17 @@ function _aui_callback {
     local err="$2"
     local worker="${AUI_FD_WORKERS[$fd]}"
     local handle="${AUI_WORKER_CALLBACKS[$worker]}"
-    
+
     if [[ -n "$err" ]]; then
         local output="$(zpty -r $worker)"
         output="${output%[^::print::]}"
         aui_stop_worker "$worker"
+        $handle "$worker" "$output"
+
         # TODO: this might not work correctly
-        eval "$handle \"$worker\" \"$output\"" || {
-            echo "_aui_callback: eval error occured"
-            echo "$handle \"$worker\" \"$output\""
-        }
+        # eval "$handle \"$worker\" \"$output\"" || {
+        #     echo "_aui_callback: eval error occured"
+        #     echo "$handle \"$worker\" \"$output\""
+        # }
     fi
 }

@@ -14,19 +14,20 @@ Using elf.zsh is very simple.
 
 In essence you only need to perform these actions:
 1. load the elf.zsh library
-2. add your preferred synchronous and asynchronous sections
+2. register your preferred synchronous and asynchronous sections
+4. design your prompt and rprompt
 3. initialize elf
 
-A simple elf setup might look like this:
+A fully functional elf setup might look like this: (WARNING: possibly outdated)
 ```zsh
-source $ZSH_PLUGIN_DIR/elf/elf.zsh
+source $ZSH_PLUGIN_DIR/elf/elf_load.zsh
 
 elf_add la "%~ > "
-aline_add ra '%{$fg_bold[red]%}'
-elf_add_async ra GIT_REV "git rev-parse --short HEAD 2>/dev/null | tr -d \"[:space:]\"" "(){ NEW="\$1"; }"
-aline_add ra '%{$fg_no_bold[default]%}'
+elf_add ra '%1v'
 
-elf_initialize
+elf_async git_rev "git rev-parse --short HEAD 2>/dev/null" 'psvar[1]=$1'
+
+elf_setup
 ```
 
 With this setup your left prompt shows the cwd and the right prompt shows the currently active git branch.
@@ -34,83 +35,26 @@ The git branch is fetched and displayed fully asynchronously.
 
 ## Command reference
 
-### Initialization
-
-`elf` offers 1 command for its initialization. 
-
-* `elf_prompt_initialize`
-  Initialize the elf prompt configuration functionality
-
-Before initialization, `elf` only defines functions, variables and widgets. Hooks are then placed when elf is initialized.
-
-After initialization, `elf`:
-* sets `PS1` and `RPS1`
-* adds widgets to the following zle hooks
-    * zle-line-init
-    * zle-line-finish
-* traps the INT signal
-
-### Configuration
-
-`elf` offers 2 commands for prompt configuration.
-
-* `elf_add [WHICH_PROMPT] [SECTION]`
-  add text SECTION to the end of prompt WHICH_PROMPT. escaped values are synchronously expanded when the prompt is shown.
-  Use this for static values and cheap computations that wont block your prompt. (eg. `"$?"`, `"%~"`)
-* `elf_add_async [WHICH_PROMPT] [IDENTIFIER] [CMD] [CALLBACK]`
-  register the command CMD with callback CALLBACK. show the value returned by assigning `"$NEW"` in the callback at the end of prompt WHICH_PROMPT.
-
-#### Concepts
-* `CMD`
-  the command CMD is asynchronously `eval`uated. It can not change the interactive shells environment.
-* `CALLBACK`
-  the callback that is run after `CMD` has completed, with the stdout+err of CMD as its first and only argument.
-  It has full access to the interactive shells environment.
-  For convenience CALLBACK may modify the value of it's associated variable by simply assigning `$NEW`
-* `IDENTIFIER`
-  Number used to refer to a specific asynchronous block
-* `WHICH_PROMPT`
-  WHICH_PROMPT is the value used for describing the prompt a block should be added to.
-  * la - the left prompt while still active
-  * ra - the right prompt while still active
-  * lf - the left prompt after it has either been aborted or accepted
-  * rf - the right prompt after it has either been aborted or accepted
-  * no - add the block to no prompt. Useful mainly for debugging and prototyping
-
-### Examples
-Add a piece of static text to the left active prompt.
-```zsh
-elf_add la "> "
-```
-
-Set the finished left prompt to mimic the active left prompt.
-```zsh
-ELF_FINISHED_PROMPT="$ELF_PROMPT"
-```
-
-Same but for right prompt.
-```zsh
-ELF_FINISHED_RPROMPT="$ELF_RPROMPT"
-```
-Add an asynchronous block to the right active prompt.
-```zsh
-aline_add_async ra GIT_REV "git rev-parse --short HEAD 2>/dev/null | tr -d \"[:space:]\"" "(){ NEW="\$1"; }"
-```
+Coming soon. `elf` is currently still undergoing significant API changes
 
 ## FAQ
 
 ### How does this compare to other zsh prompts? (pure, alien, ...)
-I do not know how to properly benchmark prompts return times, however I personally perceive `elf` to be significantly faster than any other solution I have tried. (with the exception of pure, where there does not seem to be a perceivable difference in performance)
+
+**TODO: maybe add benchmarks using zsh-prompt-benchmark**
+
+I do not know how to reliably benchmark prompts return times, however I personally perceive `elf` to be significantly faster than any other solution I have tried. (with the exception of pure, where there does not seem to be a perceivable difference in performance)
 
 Elf also aims to be as small as possible and to not rely on external dependencies.
 
-| prompt    | performance      | actual loc (lines -blank -comments)| external dependencies               |
-+------------------------------+------------------------------------+-------------------------------------+
-| alien     | noticable delays | 511 (alien libs) + 1390 (external) | promptlib, zsh-256color, zsh-async  |
-| pure      | no delay         | 372 (pure.zsh) + 292 (async.zsh)   | async.zsh (copied into repo)        |
-| geometry  |                  |                                    |                                     |
-| spaceship |                  |                                    |                                     |
-| elf       | no delay         | 93 (elf.zsh) + 48 (aui.zsh)        | none                                |
+| prompt        | performance      | actual loc (lines -blank -comments)| external dependencies               |
++---------------+------------------+------------------------------------+-------------------------------------+
+| alien         | noticable delays | 511 (alien libs) + 1390 (external) | promptlib, zsh-256color, zsh-async  |
+| pure          | no delay         | 372 (pure.zsh) + 292 (async.zsh)   | async.zsh (copied into repo)        |
+| geometry      |                  |                                    |                                     |
+| spaceship     |                  |                                    |                                     |
+| powerlevel10k |                  |                                    |                                     |
+| elf           | no delay         | 93 (elf.zsh) + 48 (aui.zsh)        | none                                |
 
 Elf of course also allows you to create your own prompts without modifying the source.
 
