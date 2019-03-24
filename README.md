@@ -33,7 +33,7 @@ some_feature_teardown
 village isn't a zsh configuration framework. It simply provides a tool to create your own zsh prompts,
 some predefined example prompts and some additional *allies*.
 
-All village tools can be used separately from one another, but are built to play of each others strengths.
+All village tools can be used separately from one another, but are built to play off of each others strengths.
 
 ## roll your own elf
 
