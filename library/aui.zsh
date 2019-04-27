@@ -89,7 +89,8 @@ function _aui_callback {
     local handle="${AUI_WORKER_CALLBACKS[$worker]}"
 
     if [[ -n "$err" ]]; then
-        local output="$(zpty -r $worker)"
+        local output
+        read -u "$fd" output
         output="${output%[^::print::]}"
         aui_stop_worker "$worker"
         $handle "$worker" "$output"

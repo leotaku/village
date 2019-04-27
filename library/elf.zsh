@@ -107,7 +107,7 @@ function elf_register {
     local widget_name="_elf-hook-widget-$identifier"
     
     eval "function $fn_name {
-        eval '(){$cmd;}'
+        $cmd
     }"
 
     case "$hook" in
@@ -124,4 +124,19 @@ function elf_register {
         *)
             echo "elf_register: not a valid zsh or zle hook" 1>&2;;
     esac
+}
+
+function elf_update {
+    variable="$1"
+    value="$2"
+    old="${(P)variable}"
+    restorep="$3"
+
+    if [[ "${old}" != "${value}" ]]; then
+        # notify-send "${old} != ${value}" &|
+        typeset -g "$variable=$value"
+        zle reset-prompt
+        [[ -n "$restorep" ]] &&\
+        typeset -g "$variable=$old"
+    fi
 }

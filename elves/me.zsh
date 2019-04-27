@@ -6,13 +6,13 @@ source $VILLAGE_SCRIPTDIR/library/elf.zsh
 
 workdir="$PWD"
 elf_sync precmd workdir 'workdir="${${PWD/$HOME/~}//(#b)(\/#.#?)[^\/]#\//$match[1]/}"'
-elf_async line-init nix-prompt "me_nix_prompt" 'psvar[1]=$2'
-elf_async line-init git "git rev-parse --short HEAD 2>/dev/null" 'psvar[2]=$2; zle reset-prompt'
-elf_sync line-finish reset "RPS1=''; zle reset-prompt; RPS1=\"\$ELF_RPROMPT\""
-elf_sync line-abort reset "RPS1=''; zle reset-prompt; RPS1=\"\$ELF_RPROMPT\""
+elf_async line-init nix-prompt "me_nix_prompt" 'elf_update promptchar $2'
+elf_async line-init git "git rev-parse --short HEAD 2>/dev/null" 'elf_update git_rev $2'
+elf_sync line-finish reset "elf_update git_rev '' 1"
+elf_sync line-abort reset "elf_update git_rev '' 1"
 
-elf_add la '$workdir' '$psvar[1]' ' '
-elf_add ra '%B%F{red}%2v'
+elf_add la '$workdir' '$promptchar' ' '
+elf_add ra '%B%F{red}$git_rev'
 
 function me_nix_prompt {
     if [[ -z "$NIX_CC" ]]; then
