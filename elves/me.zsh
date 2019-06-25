@@ -5,6 +5,8 @@ VILLAGE_SCRIPTDIR="${0:A:h}/.."
 source $VILLAGE_SCRIPTDIR/library/elf.zsh
 
 workdir="$PWD"
+promptchar=">"
+
 elf_sync precmd workdir 'workdir="${${PWD/$HOME/~}//(#b)(\/#.#?)[^\/]#\//$match[1]/}"'
 elf_async line-init nix-prompt "me_nix_prompt" 'elf_update promptchar $2'
 elf_async line-init git "git rev-parse --short HEAD 2>/dev/null" 'elf_update git_rev $2'
