@@ -1,63 +1,76 @@
 # dwarf.zsh - change cursors shape based on vi state
 #
-# for optimal responsiveness this feature should be 
-# initialized before elf
+# NOTE: For optimal responsiveness this feature should be
+# NOTE: initialized before elf
 
-# load lib
+# Load lib
 
 autoload -Uz add-zsh-hook add-zle-hook-widget
 
-# vi cursors
+# Variables
 
-typeset -g DWARF_SUPPORTED_TERMS=('screen-256color'
-                                  'xterm-256color'
-                                  'tmux-256color'
-                                  'xterm-kitty')
+typeset -g DWARF_DELAY=0.1
 
-typeset -gA DWARF_CURSORS=('normal' '\033[2 q' 
-                           'insert' '\033[6 q' 
-                           'vline' '\033[4 q')
+typeset -gA DWARF_CURSORS=(
+    'normal' '\033[2 q'
+    'insert' '\033[6 q'
+    'vline' '\033[4 q'
+)
 
-function dwarf_change_cursor {
+# Functions
+
+function _dwarf_change_cursor {
     if [[ "$KEYMAP" == "main" ]]; then
-        dwarf_set_insert_cursor
+        _dwarf_set_insert_cursor
     elif [[ "$KEYMAP" == "vicmd" ]]; then
-        dwarf_set_normal_cursor
-    else 
+        _dwarf_set_normal_cursor
+    else
         return
     fi
 }
 
-function dwarf_set_normal_cursor {
-    [[ "$DWARF_SUPPORTED_TERMS" =~ "$TERM" ]] || return 1
+function _dwarf_set_normal_cursor {
     printf "${DWARF_CURSORS[normal]}"
 }
 
-function dwarf_set_insert_cursor {
-    [[ "$DWARF_SUPPORTED_TERMS" =~ "$TERM" ]] || return 1
+function _dwarf_set_insert_cursor {
     printf "${DWARF_CURSORS[insert]}"
 }
 
-# widgets
+function _dwarf_line_init {
+    _dwarf_set_insert_cursor
+    kill $_DWARF_NORMAL_PROCESS &>/dev/null
+}
 
-zle -N dwarf-keymap-select dwarf_change_cursor
-zle -N dwarf-line-init dwarf_set_insert_cursor
-zle -N dwarf-line-finish dwarf_set_normal_cursor
+function _dwarf_line_finish {
+    { sleep "$DWARF_DELAY" && _dwarf_set_normal_cursor } &!
+    _DWARF_NORMAL_PROCESS=$!
+}
 
-# initialization
+# Widgets
+
+zle -N _dwarf-keymap-select _dwarf_change_cursor
+zle -N _dwarf-line-init _dwarf_line_init
+zle -N _dwarf-line-finish _dwarf_line_finish
+
+# Initialization
 
 function dwarf_setup {
-    add-zle-hook-widget keymap-select dwarf-keymap-select
-    add-zle-hook-widget line-init dwarf-line-init
-    add-zle-hook-widget line-finish dwarf-line-finish
+    ((DWARF_INITIALIZED == 1)) && return 1
 
-    DWARF_INITIALIZED="1"
+    add-zle-hook-widget keymap-select _dwarf-keymap-select
+    add-zle-hook-widget line-init _dwarf-line-init
+    add-zle-hook-widget line-finish _dwarf-line-finish
+
+    DWARF_INITIALIZED=1
 }
 
 function dwarf_teardown {
-    add-zle-hook-widget -d keymap-select dwarf-keymap-select
-    add-zle-hook-widget -d line-init dwarf-line-init
-    add-zle-hook-widget -d line-finish dwarf-line-finish
+    ((DWARF_INITIALIZED =! 1)) && return 1
 
-    DWARF_INITIALIZED="0"
+    add-zle-hook-widget -d keymap-select _dwarf-keymap-select
+    add-zle-hook-widget -d line-init _dwarf-line-init
+    add-zle-hook-widget -d line-finish _dwarf-line-finish
+
+    DWARF_INITIALIZED=0
 }
