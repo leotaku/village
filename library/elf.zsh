@@ -6,13 +6,13 @@
 # shell, elf.zsh offers a straightforward configuration
 # framework for your own, fully asycronous modeline creations
 
-# load lib
+# Load lib
 
 local ELF_SCRIPTDIR="${0:A:h}"
 source "$ELF_SCRIPTDIR/aui.zsh"
 autoload -Uz add-zsh-hook add-zle-hook-widget
 
-# setup/teardown
+# Variables
 
 typeset -g ELF_PROMPT=""
 typeset -g ELF_RPROMPT=""
@@ -20,7 +20,7 @@ typeset -g _ELF_ZSH_HOOKS=()
 typeset -g _ELF_ZLE_HOOKS=()
 typeset -g _ELF_TRAPINT_HOOKS=()
 
-# prompt/line
+# Functions
 
 function elf_add {
     local which_prompt="$1"; shift

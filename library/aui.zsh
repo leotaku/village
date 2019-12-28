@@ -1,23 +1,28 @@
 # aui -- a simple async ui framework for zsh
 
-# setup
+# Load lib
 
 zmodload zsh/zpty
+
+# Variables
 
 typeset -gA _AUI_FD_WORKERS
 typeset -gA _AUI_WORKER_FDS
 typeset -gA _AUI_WORKER_CALLBACKS
 
-# functions
+# Functions
 
 # Initialize a worker with the name of "$1", which can then
 # be consumed by aui_run_worker or aui_stop_worker.
 #
-# trying to start an already existing worker will fail with
-# exit code 1
+# This function will also return the worker name using the global
+# variable $WORKER
 #
-# !!! WARNING: this command must run in the top level shell !!!
-# !!! this means you may not use "$()" or pipe the function !!!
+# Trying to initialize an already existing worker will fail with exit
+# code 1
+#
+# !!! WARNING: This command must run in the top level shell !!!
+# !!! This means you may not use "$()" or pipe the function !!!
 
 function aui_start_worker {
     local worker="$1"
@@ -33,12 +38,12 @@ function aui_start_worker {
     WORKER="$worker"
 }
 
-# forcefully consume a worker without waiting for it
-# to complete. stopping a worker will also discard
-# its callback
+# Forcefully stop a worker without waiting for it to
+# complete.
 #
-# trying to stop a non-existent worker will fail with 
-# exit code 1
+# Stopping a worker will also discard its callback.
+#
+# Trying to stop a non-existent worker will fail with exit code 1
 
 function aui_stop_worker {
     local worker="$1"
@@ -52,14 +57,15 @@ function aui_stop_worker {
     unset "_AUI_WORKER_CALLBACKS[$worker]"
 }
 
-# run command "$2" (quoted) in worker "$1" with callback "$3"
-# both the command and callback are ordinary shell commands
-# passed to eval. This means you may use piping etc.
+# Run command "$2" (quoted) in worker "$1" with callback "$3" both the
+# command and callback are ordinary shell commands that are evaled or
+# run in functons. This means you may use piping etc.
 #
-# trying to run a non-existent worker will fail with 
-# exit code 1
-# trying to run an already running worker will fail with
-# exit code 2
+# The callback is passed the worker name as its first argument and the
+# trimmed output as its second argument.
+#
+# Trying to run a non-existent worker will fail with exit code 1.
+# Trying to run an already running worker will fail with exit code 2.
 
 function aui_run_worker {
     local worker="$1";
@@ -78,7 +84,7 @@ function aui_run_worker {
     zpty -w "$worker" "$cmd"
 }
 
-# the internal callback passed to zle -F for all jobs
+# The internal callback passed to zle -F for all jobs
 
 function _aui_callback {
     local fd="$1"

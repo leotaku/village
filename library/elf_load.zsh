@@ -1,7 +1,11 @@
 # elf-load.zsh -- cleanly loading and unloading elf
 
+# Load lib
+
 local ELF_SCRIPTDIR="${0:A:h}"
 source "$ELF_SCRIPTDIR/elf.zsh"
+
+# Variables
 
 typeset -g ELF_INITIALIZED
 typeset -g _ELF_RESTORE_TRAPINT
@@ -10,6 +14,8 @@ typeset -g _ELF_RESTORE_RPROMPT
 typeset -g _ELF_RESTORE_PROMPT_2
 typeset -g _ELF_RESTORE_RPROMPT_2
 typeset -g _ELF_RESTORE_PROMPT_SUBST
+
+# Functions
 
 function elf_setup {
     ((ELF_INITIALIZED == 1)) && return 1
