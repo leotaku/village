@@ -39,5 +39,3 @@ All village tools can be used separately from one another, but are built to play
 
 `elf.zsh` also allows you to easily create your own prompt configuration.
 Visit the `library` subdirectory for instructions and other information regarding elf.
-
-*Elves usually live in villages, right?*
