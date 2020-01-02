@@ -1,10 +1,4 @@
-# village
-
-If you are a beginner zsh user you might want to first take a look at the `village` parent directory of this repo.
-
-It contains predefined elf configurations that you may use directly or as a base for your own creations.
-
-# elf.zsh
+# elf
 
 `elf.zsh` is a framework for creating your own fully asynchronous zsh prompts, using its own library for zsh-native non-blocking computation. (`aui.zsh`)
 Its creation was motivated by the slowness and lack of configurability of existing zsh prompts.
@@ -39,24 +33,34 @@ Coming soon. `elf` is currently still undergoing significant API changes
 
 ## FAQ
 
-### How does this compare to other zsh prompts? (pure, alien, ...)
+### How do I start?
 
-**TODO: maybe add benchmarks using zsh-prompt-benchmark**
+If you are a beginner zsh user you might want to first take a look at the `village` parent directory of this repo.
+
+It contains predefined elf configurations that you may use directly or as a base for your own creations.
+
+### How does this compare to other zsh prompts?
 
 I do not know how to reliably benchmark prompts return times, however I personally perceive `elf` to be significantly faster than any other solution I have tried. (with the exception of pure, where there does not seem to be a perceivable difference in performance)
 
 Elf also aims to be as small as possible and to not rely on external dependencies.
 
-| prompt        | performance      | actual loc (lines -blank -comments)| external dependencies               |
-+---------------+------------------+------------------------------------+-------------------------------------+
-| alien         | noticable delays | 511 (alien libs) + 1390 (external) | promptlib, zsh-256color, zsh-async  |
-| pure          | no delay         | 372 (pure.zsh) + 292 (async.zsh)   | async.zsh (copied into repo)        |
-| geometry      |                  |                                    |                                     |
-| spaceship     |                  |                                    |                                     |
-| powerlevel10k |                  |                                    |                                     |
-| elf           | no delay         | 93 (elf.zsh) + 48 (aui.zsh)        | none                                |
+| prompt        | performance            | actual loc (lines -blank -comments) | external dependencies               |
+| ------------- | ----------------       | ----------------------------------  | ----------------------------------- |
+| alien         | noticable delays       | 511 (alien libs) + 1390 (external)  | promptlib, zsh-256color, zsh-async  |
+| pure          | no delay               | 372 (pure.zsh) + 292 (async.zsh)    | async.zsh (copied into repo)        |
+| geometry      | noticeable delays      |                                     |                                     |
+| spaceship     |                        |                                     |                                     |
+| powerlevel10k |                        |                                     |                                     |
+| elf           | no or very small delay | 93 (elf.zsh) + 48 (aui.zsh)         | none                                |
 
-Elf of course also allows you to create your own prompts without modifying the source.
+#### Why is pure so much faster than any other prompt?
+
+From my investigation, the [pure](https://github.com/sindresorhus/pure) is much much faster than any other prompt framework.
+I would like to investigate why that is and improve village with this information.
+
+* `zprof` reports that async takes up a considerable amount of time.
+* It seems like pure uses what it calls a *preprompt* mechanism.
 
 # aui.zsh
 `aui.zsh` - asynchronous ui for zsh
