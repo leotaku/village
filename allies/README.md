@@ -1,20 +1,18 @@
 # allies
 
-`allies` are additional tools provided by village that aim to improve the interactive usage of the zsh shell
-
-They may be used separately from each other and/or `elf.zsh`
+These are additional modules provided by Village that aim to improve the interactive usage of the ZSH shell.
 
 ```zsh
-source $ZSH_PLUGIN_DIR/allies/ally.zsh
-ally_setup
+source $ZSH_PLUGIN_DIR/allies/MODULE.zsh
+MODULE_setup
 
 ```
 
 ## dwarf.zsh
-changes the cursor shape based on vi state
+Change the cursor shape based on vi state.
 
-for optimal responsiveness this feature should be initialized before elf is
+For optimal responsiveness this feature should be initialized before elf is.
 
 ## rogue.zsh
-makes zsh startup appear faster with visual tricks
+Make zsh startup appear faster with visual tricks.
 

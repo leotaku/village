@@ -1,7 +1,7 @@
 # Village
 
-Village is a collection of responsive zsh prompts using their own shared asynchronous configuration framework.
-It also includes some other zsh-prompt related utilities under `allies`.
+Village is a collection of responsive ZSH prompts using their own shared asynchronous configuration framework.
+It also includes some other prompt related utilities under `allies`.
 
 ## Install
 
@@ -33,14 +33,14 @@ SOME_FEATURE_teardown
 ### elf.zsh
 
 Using `elf.zsh`, Village prompts often noticeably outperform both well known prompt configurations and frameworks as well as handcrafted prompts of similar complexity.
-
 `elf.zsh` is implemented in about 200 SLOC with no external dependencies, which makes it massively lighter than most competing alternatives.
 
 Development and usage are documented in more detail [here](library).
 
 ### allies
 
-Village also provides some additional modules that further improve the ZSH experience.
+Village also provides some additional modules that further improve the interactive ZSH experience.
+They are included here because they, in some way, need to hook into prompt mechanisms, making ZSH prompt framework agnosticism unrealistic.
 
 Individual modules are documented [here](allies).
 
