@@ -1,39 +1,53 @@
-# village
+# Village
 
-Village is a collection of responsive zsh prompts using their own shared asynchronous configuration framework. (`elf.zsh`)
+Village is a collection of responsive zsh prompts using their own shared asynchronous configuration framework.
 It also includes some other zsh-prompt related utilities under `allies`.
 
-Using `elf.zsh`, village prompts often noticeably outperform both well known prompt configurations and frameworks as well as handcrafted prompts of similar complexity.
+## Install
 
-`elf.zsh` is implemented in about 200 SLOC with no external dependencies.
+The ZSH plugin manager situation is heavily fragmented, so I am completely uninterested in providing a tutorial on how to install village using every single option available.
+Just follow the instructions in the [usage](#usage) section and you will be fine.
 
-## Usage
+## <a id="usage"></a>Usage
 
-You may load any village configuration in the following manner:
+You may load any village configuration in the following manner.
 
 ```zsh
 source $DIR/library/elf_load.zsh
-source $DIR/elves/YOUR_FAVORITE_ELF.zsh
+source $DIR/elves/SOME_THEME.zsh
 source $DIR/allies/SOME_FEATURE.zsh
 
 SOME_FEATURE_setup
 elf_setup
 ```
 
-All things village may also be unloaded cleanly:
+All components may also be unloaded cleanly.
 
 ```zsh
 elf_teardown
 SOME_FEATURE_teardown
 ```
 
-## Other
+## Further reading
 
-### Why another zsh configuration framework?
+### elf.zsh
 
-Village isn't a zsh configuration framework. It simply provides a tool to create your own zsh prompts, some predefined example prompts and some additional helpers that the author uses.
+Using `elf.zsh`, Village prompts often noticeably outperform both well known prompt configurations and frameworks as well as handcrafted prompts of similar complexity.
 
-### Roll your own elf
+`elf.zsh` is implemented in about 200 SLOC with no external dependencies, which makes it massively lighter than most competing alternatives.
 
-`elf.zsh` also allows you to easily create your own prompt configuration.
-Simply edit one of the preexisting configurations under `elves`.
+Development and usage are documented in more detail [here](library).
+
+### allies
+
+Village also provides some additional modules that further improve the ZSH experience.
+
+Individual modules are documented [here](allies).
+
+## Contributing
+
+PRs and issues are welcome.
+
+## License
+
+Undecided
