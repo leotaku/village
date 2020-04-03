@@ -47,14 +47,14 @@ I do not know how to reliably benchmark prompts return times, however I personal
 
 Elf also aims to be as small as possible and to not rely on external dependencies.
 
-| prompt        | performance            | actual loc (lines -blank -comments) | external dependencies               |
-| ------------- | ----------------       | ----------------------------------  | ----------------------------------- |
-| alien         | noticable delays       | 511 (alien libs) + 1390 (external)  | promptlib, zsh-256color, zsh-async  |
-| pure          | no delay               | 372 (pure.zsh) + 292 (async.zsh)    | async.zsh (copied into repo)        |
-| geometry      | noticeable delays      |                                     |                                     |
-| spaceship     |                        |                                     |                                     |
-| powerlevel10k |                        |                                     |                                     |
-| elf           | no or very small delay | 93 (elf.zsh) + 48 (aui.zsh)         | none                                |
+| prompt        | performance            | sloc (lines -blank -comments)                   | external dependencies               |
+| ------------- | ----------------       | ----------------------------------              | ----------------------------------- |
+| alien         | noticable delays       | 511 (alien libs) + 1390 (external)              | promptlib, zsh-256color, zsh-async  |
+| pure          | no delay               | 372 (pure.zsh) + 292 (async.zsh)                | async.zsh (copied into repo)        |
+| geometry      | noticeable delays      |                                                 |                                     |
+| spaceship     |                        |                                                 |                                     |
+| powerlevel10k |                        |                                                 |                                     |
+| elf           | no or very small delay | 98 (elf.zsh) + 68 (elf_load.zsh) + 48 (aui.zsh) | none                                |
 
 #### Why is pure so much faster than any other prompt?
 
